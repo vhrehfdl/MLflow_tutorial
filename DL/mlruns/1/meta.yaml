@@ -1,0 +1,4 @@
+artifact_location: file:///root/junghoon/github_repo/mlflow_tutorial/DL/mlruns/1
+experiment_id: '1'
+lifecycle_stage: active
+name: classification

@@ -1,0 +1,15 @@
+artifact_uri: file:///root/junghoon/github_repo/mlflow_tutorial/DL/mlruns/1/ec1037ef033e4a4cbc32647356644020/artifacts
+end_time: 1640931795524
+entry_point_name: ''
+experiment_id: '1'
+lifecycle_stage: active
+name: ''
+run_id: ec1037ef033e4a4cbc32647356644020
+run_uuid: ec1037ef033e4a4cbc32647356644020
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1640931792663
+status: 3
+tags: []
+user_id: root
