@@ -1,10 +1,9 @@
 import time
 import torch
 import mlflow
-import collections
 import pickle
+import collections
 import pandas as pd
-import torch.nn as nn
 import torch.nn.functional as F
 
 from torch import nn
@@ -22,12 +21,6 @@ def load_data(train_dir):
     train_y = encoder.fit_transform(train_y)
     
     return train_x, train_y, encoder
-
-
-def pos_tagging(sentences):
-    pos_sentences = [sentence.split(" ") for sentence in sentences]
-
-    return pos_sentences
 
 
 def collate_batch(batch):
@@ -134,8 +127,10 @@ def test(dataloader, model):
 
 if __name__ == "__main__":
     # Mlflow
+    # mlflow.set_tracking_uri("http://10.20.81.77:5000")
     mlflow.set_experiment('classification')
     mlflow.log_param("env", "local")
+
 
     # Hyper Parameters
     train_dir = "train.csv"
@@ -145,7 +140,7 @@ if __name__ == "__main__":
     lr = 0.001
     batch_size = 4
     total_acc = None
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cpu")
 
 
     # Flow

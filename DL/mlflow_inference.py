@@ -1,7 +1,6 @@
-import torch
 import mlflow
-import numpy as np
 import pickle
+import numpy as np
 
 
 if __name__ == "__main__":

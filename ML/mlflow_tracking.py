@@ -41,6 +41,7 @@ def evaluation(model, test_x, test_y):
 
 if __name__ == '__main__':
     # MLflow
+    # mlflow.set_tracking_uri("http://10.20.81.77:5000")
     mlflow.set_experiment('titanic')
     mlflow.log_param("env", "local")
 
@@ -57,14 +58,10 @@ if __name__ == '__main__':
     pred_x = model.predict(test_x)
 
     mlflow.log_param("train", train_dir)
-    mlflow.log_param("train example", "-")
     mlflow.log_param("train num", len(train_x))
     mlflow.log_param("class", collections.Counter(train_y))
     mlflow.log_param("class num", len(set(train_y)))
-    mlflow.log_param("train text max length", "-")
-    mlflow.log_param("train text average length", "-")
-    mlflow.log_artifact("train.csv")
 
     mlflow.log_metric("f1 score", score)
+    mlflow.log_artifact(train_dir)
     mlflow.sklearn.log_model(model, "titanic_model")
-    # mlflow.pytorch.log_model(model, "model", pip_requirements=[f"torch=={torch.__version__}"])
