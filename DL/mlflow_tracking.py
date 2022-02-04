@@ -127,7 +127,7 @@ def test(dataloader, model):
 
 if __name__ == "__main__":
     # Mlflow
-    # mlflow.set_tracking_uri("http://10.20.81.77:5000")
+    # mlflow.set_tracking_uri("http://IP주소:5000")
     mlflow.set_experiment('classification')
     mlflow.log_param("env", "local")
 

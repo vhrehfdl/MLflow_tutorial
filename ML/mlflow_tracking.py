@@ -41,7 +41,7 @@ def evaluation(model, test_x, test_y):
 
 if __name__ == '__main__':
     # MLflow
-    # mlflow.set_tracking_uri("http://10.20.81.77:5000")
+    # mlflow.set_tracking_uri("http://IP주소:5000")
     mlflow.set_experiment('titanic')
     mlflow.log_param("env", "local")
 

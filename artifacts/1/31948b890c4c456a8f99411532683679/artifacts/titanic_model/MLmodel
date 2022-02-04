@@ -1,0 +1,14 @@
+artifact_path: titanic_model
+flavors:
+  python_function:
+    env: conda.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    python_version: 3.7.11
+  sklearn:
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.0.2
+model_uuid: 02632b745d534b299ebaa01c96a29832
+run_id: 31948b890c4c456a8f99411532683679
+utc_time_created: '2022-02-04 04:03:26.175950'
