@@ -5,6 +5,7 @@ import pandas as pd
 from sklearn.metrics import f1_score
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import train_test_split
+from mlflow.tracking import MlflowClient
 
 
 def load_data(train_dir, test_dir):
@@ -40,28 +41,30 @@ def evaluation(model, test_x, test_y):
 
 
 if __name__ == '__main__':
-    # MLflow
-    # mlflow.set_tracking_uri("http://IP주소:5000")
-    mlflow.set_experiment('titanic')
-    mlflow.log_param("env", "local")
+    mlflow.set_tracking_uri("http://127.0.0.1:5000")
+    exp_info = MlflowClient().get_experiment_by_name("titanic")
+    exp_id = exp_info.experiment_id if exp_info else MlflowClient().create_experiment("titanic")
+    with mlflow.start_run(experiment_id=exp_id) as run:
 
-    # Directory
-    train_dir = "train.csv"
-    test_dir = "test.csv"
+    # mlflow.set_experiment('titanic')
+    # with mlflow.start_run() as run:
+        # Directory
+        train_dir = "train.csv"
+        test_dir = "test.csv"
 
-    # Flow
-    train, test = load_data(train_dir, test_dir)
-    train_x, train_y, test_x, test_y = pre_processing(train, test)
-    model = build_model(train_x, train_y)
-    score = evaluation(model, test_x, test_y)
+        # Flow
+        train, test = load_data(train_dir, test_dir)
+        train_x, train_y, test_x, test_y = pre_processing(train, test)
+        model = build_model(train_x, train_y)
+        score = evaluation(model, test_x, test_y)
 
-    pred_x = model.predict(test_x)
+        pred_x = model.predict(test_x)
 
-    mlflow.log_param("train", train_dir)
-    mlflow.log_param("train num", len(train_x))
-    mlflow.log_param("class", collections.Counter(train_y))
-    mlflow.log_param("class num", len(set(train_y)))
+        mlflow.log_param("train", train_dir)
+        mlflow.log_param("train num", len(train_x))
+        mlflow.log_param("class", collections.Counter(train_y))
+        mlflow.log_param("class num", len(set(train_y)))
 
-    mlflow.log_metric("f1 score", score)
-    mlflow.log_artifact(train_dir)
-    mlflow.sklearn.log_model(model, "titanic_model")
+        mlflow.log_metric("f1 score", score)
+        # mlflow.log_artifact(train_dir)
+        # mlflow.sklearn.log_model(model, "titanic_model")
