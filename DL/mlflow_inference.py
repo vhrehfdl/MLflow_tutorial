@@ -18,7 +18,8 @@ if __name__ == "__main__":
         test_x = test_x[0:max_len]
     else:
         test_x = test_x[0:] + ([0]*(max_len-len(test_x)))
-    
+
+    print(test_x)
     test_x = np.array([test_x])
-    loaded_model = mlflow.pyfunc.load_model('runs:/ec1037ef033e4a4cbc32647356644020/model')
+    loaded_model = mlflow.pyfunc.load_model('runs:/1830630787574f2b9192ffcf7f28052f/model')
     print(loaded_model.predict(test_x))

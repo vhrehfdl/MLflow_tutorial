@@ -11,6 +11,7 @@ from torch.utils.data import DataLoader
 from torchtext.vocab import build_vocab_from_iterator
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
+from mlflow.tracking import MlflowClient
 
 
 def load_data(train_dir):
@@ -126,75 +127,75 @@ def test(dataloader, model):
 
 
 if __name__ == "__main__":
-    # Mlflow
-    # mlflow.set_tracking_uri("http://IP주소:5000")
-    mlflow.set_experiment('classification')
-    mlflow.log_param("env", "local")
+    # mlflow.set_tracking_uri("http://127.0.0.1:5000")
+    # exp_info = MlflowClient().get_experiment_by_name("nlp")
+    # exp_id = exp_info.experiment_id if exp_info else MlflowClient().create_experiment("nlp")
+    # with mlflow.start_run(experiment_id=exp_id) as run:
 
+    mlflow.set_experiment('nlp')
+    with mlflow.start_run() as run:
+        # Hyper Parameters
+        train_dir = "train.csv"
+        epochs = 3
+        max_len = 30
+        hidden_dim = 300
+        lr = 0.001
+        batch_size = 4
+        total_acc = None
+        device = torch.device("cpu")
 
-    # Hyper Parameters
-    train_dir = "train.csv"
-    epochs = 3
-    max_len = 30
-    hidden_dim = 300
-    lr = 0.001
-    batch_size = 4
-    total_acc = None
-    device = torch.device("cpu")
+        # Flow
+        print("1. Load Data")
+        train_x, train_y, encoder = load_data(train_dir)
+        train_x, val_x, train_y, val_y = train_test_split(train_x, train_y, test_size=0.1, random_state=321, stratify=train_y)
 
+        print("2. Pre Processing")
+        train_x = [sentence.split(" ") for sentence in train_x]
+        val_x = [sentence.split(" ") for sentence in val_x]
 
-    # Flow
-    print("1. Load Data")
-    train_x, train_y, encoder = load_data(train_dir)
-    train_x, val_x, train_y, val_y = train_test_split(train_x, train_y, test_size=0.1, random_state=321, stratify=train_y)
+        vocab = build_vocab_from_iterator(train_x, specials=["<unk>"])
+        vocab.set_default_index(vocab["<unk>"])
 
-    print("2. Pre Processing")
-    train_x = [sentence.split(" ") for sentence in train_x]
-    val_x = [sentence.split(" ") for sentence in val_x]
-    
-    vocab = build_vocab_from_iterator(train_x, specials=["<unk>"])
-    vocab.set_default_index(vocab["<unk>"])
+        with open('vocab.pickle', 'wb') as f:
+            pickle.dump(vocab, f, pickle.HIGHEST_PROTOCOL)
 
-    with open('vocab.pickle', 'wb') as f:
-        pickle.dump(vocab, f, pickle.HIGHEST_PROTOCOL)
+        train_iter = text_padding(train_x, train_y, max_len, pad_token="<unk>")
+        val_iter = text_padding(val_x, val_y, max_len, pad_token="<unk>")
 
-    train_iter = text_padding(train_x, train_y, max_len, pad_token="<unk>")
-    val_iter = text_padding(val_x, val_y, max_len, pad_token="<unk>")
-    
-    train_dataloader = DataLoader(train_iter, batch_size=batch_size, shuffle=False, collate_fn=collate_batch)
-    val_dataloader = DataLoader(val_iter, batch_size=batch_size, shuffle=False, collate_fn=collate_batch)
-    
-    print("3. Build Model")
-    model = TextCNN(len(vocab), hidden_dim, num_class=len(list(set(train_y))), max_len=max_len).to(device)
-    optimizer = torch.optim.Adam(model.parameters(), lr=lr)
-    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, 1.0, gamma=0.1)
-    
-    print("4. Train")
-    for epoch in range(1, epochs + 1):
-        start_time = time.time()
-        train(train_dataloader, model)
-        acc_val = test(val_dataloader, model)
-        if total_acc is not None and total_acc > acc_val:
-            scheduler.step()
-        else:
-            total_acc = acc_val
+        train_dataloader = DataLoader(train_iter, batch_size=batch_size, shuffle=False, collate_fn=collate_batch)
+        val_dataloader = DataLoader(val_iter, batch_size=batch_size, shuffle=False, collate_fn=collate_batch)
 
-        print('-' * 59)
-        print('| end of epoch {:3d} | time: {:5.2f}s | valid accuracy {:8.3f} '.format(epoch, time.time()-start_time, total_acc))
-        print('-' * 59)
+        print("3. Build Model")
+        model = TextCNN(len(vocab), hidden_dim, num_class=len(list(set(train_y))), max_len=max_len).to(device)
+        optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+        scheduler = torch.optim.lr_scheduler.StepLR(optimizer, 1.0, gamma=0.1)
 
+        print("4. Train")
+        for epoch in range(1, epochs + 1):
+            start_time = time.time()
+            train(train_dataloader, model)
+            acc_val = test(val_dataloader, model)
+            if total_acc is not None and total_acc > acc_val:
+                scheduler.step()
+            else:
+                total_acc = acc_val
 
-    # MLflow
-    import random
-    random_no = random.randrange(0, len(train_x))
-    train_y = encoder.inverse_transform(train_y)
+            print('-' * 59)
+            print('| end of epoch {:3d} | time: {:5.2f}s | valid accuracy {:8.3f} '.format(epoch, time.time()-start_time, total_acc))
+            print('-' * 59)
 
-    mlflow.log_param("train", train_dir)
-    mlflow.log_param("train num", len(train_x))
-    mlflow.log_param("class num", len(set(train_y)))
-    mlflow.log_param("class", collections.Counter(train_y))
-    mlflow.log_param("train example", train_x[random_no])
-    mlflow.log_param("train text max length", max([len(x) for x in train_x]))
-    mlflow.log_param("train text average length", sum([len(x) for x in train_x])/len(train_x))
+        # MLflow
+        import random
+        random_no = random.randrange(0, len(train_x))
+        train_y = encoder.inverse_transform(train_y)
 
-    mlflow.pytorch.log_model(model, "model", pip_requirements=[f"torch=={torch.__version__}"])
+        mlflow.log_param("train", train_dir)
+        mlflow.log_param("train num", len(train_x))
+        mlflow.log_param("class num", len(set(train_y)))
+        mlflow.log_param("class", collections.Counter(train_y))
+        mlflow.log_param("train example", train_x[random_no])
+        mlflow.log_param("train text max length", max([len(x) for x in train_x]))
+        mlflow.log_param("train text average length", sum([len(x) for x in train_x])/len(train_x))
+        mlflow.log_param("epochs", epochs)
+
+        # mlflow.pytorch.log_model(model, "model", pip_requirements=[f"torch=={torch.__version__}"])
