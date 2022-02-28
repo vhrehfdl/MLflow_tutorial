@@ -12,7 +12,8 @@ $ python mlflow_tracking.py
 $ mlflow ui
 $ cd ../DL (현재 경로:DL)
 $ python mlflow_tracking.py
-$ mlflow ui -h 0.0.0.0 -p 1010
+$ mlflow ui (로컬 접속)
+$ mlflow ui -h 0.0.0.0 -p 1010 (서버 접속)
 ```
 
 ## MLflow Registry
@@ -20,7 +21,9 @@ MLflow Registry 같은 경우에는 터미널 2개 띄운 후 실행한다.
 ```
 [터미널 A]
 $ cd .. (현재 경로:mlflow_tutorial)
-$ mlflow server --backend-store-uri sqlite:///mlflow.db --default-artifact-root artifacts --host 0.0.0.0
+$ mkdir mlflow_tracking
+$ cd mlflow_tracking
+$ mlflow ui
 ```
 
 mlflow_tracking.py에서 "mlflow.set_tracking_uri("http://IP주소:5000")" 코드의 주석을 풀어준다.  
@@ -43,9 +46,8 @@ $ cd ../DL (현재 경로:DL)
 $ python mlflow_inference.py
 ```
 
+모델 API 서버 띄우기
 ```
 $ mlflow models serve -m runs:/4ec92189f0b646dcb5d1a8ba0d6c878f/titanic_model --no-conda
-$ mlflow models serve -m runs:/4ec92189f0b646dcb5d1a8ba0d6c878f/titanic_model
 $ curl http://IP주소:1012/invocations -H 'Content-Type: application/json' -d '{"columns": ["Pclass", "Sex", "Fare", "SibSp", "Parch"], "data": [[1, 2, 3, 2 ,2], [1, 2, 4, 5, 6]]}'
-
 ```
