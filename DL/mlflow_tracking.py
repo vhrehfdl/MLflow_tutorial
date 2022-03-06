@@ -127,7 +127,7 @@ def test(dataloader, model):
 
 
 if __name__ == "__main__":
-    # mlflow.set_tracking_uri("http://127.0.0.1:5000")
+    # mlflow.set_tracking_uri("http://127.0.0.1:1010")
     # exp_info = MlflowClient().get_experiment_by_name("nlp")
     # exp_id = exp_info.experiment_id if exp_info else MlflowClient().create_experiment("nlp")
     # with mlflow.start_run(experiment_id=exp_id) as run:
@@ -198,4 +198,4 @@ if __name__ == "__main__":
         mlflow.log_param("train text average length", sum([len(x) for x in train_x])/len(train_x))
         mlflow.log_param("epochs", epochs)
 
-        # mlflow.pytorch.log_model(model, "model", pip_requirements=[f"torch=={torch.__version__}"])
+        mlflow.pytorch.log_model(model, "model", pip_requirements=[f"torch=={torch.__version__}"])
