@@ -41,13 +41,13 @@ def evaluation(model, test_x, test_y):
 
 
 if __name__ == '__main__':
-    mlflow.set_tracking_uri("http://127.0.0.1:5000")
-    exp_info = MlflowClient().get_experiment_by_name("titanic")
-    exp_id = exp_info.experiment_id if exp_info else MlflowClient().create_experiment("titanic")
-    with mlflow.start_run(experiment_id=exp_id) as run:
+    # mlflow.set_tracking_uri("http://127.0.0.1:1010")
+    # exp_info = MlflowClient().get_experiment_by_name("titanic")
+    # exp_id = exp_info.experiment_id if exp_info else MlflowClient().create_experiment("titanic")
+    # with mlflow.start_run(experiment_id=exp_id) as run:
 
-    # mlflow.set_experiment('titanic')
-    # with mlflow.start_run() as run:
+    mlflow.set_experiment('titanic')
+    with mlflow.start_run() as run:
         # Directory
         train_dir = "train.csv"
         test_dir = "test.csv"
@@ -66,5 +66,5 @@ if __name__ == '__main__':
         mlflow.log_param("class num", len(set(train_y)))
 
         mlflow.log_metric("f1 score", score)
-        # mlflow.log_artifact(train_dir)
-        # mlflow.sklearn.log_model(model, "titanic_model")
+        mlflow.log_artifact(train_dir)
+        mlflow.sklearn.log_model(model, "titanic_model")
