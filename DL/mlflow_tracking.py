@@ -73,7 +73,7 @@ class TextCNN(nn.Module):
 
         self.dropout = nn.Dropout(dropout_keep)
         self.fc = nn.Linear(num_channels * len(kernel_size), num_class)
-        self.softmax = nn.Softmax()
+        self.softmax = nn.Softmax(dim=1)
 
     def forward(self, x):
         embedded_sent = self.embeddings(x).permute(0, 2, 1)
@@ -127,14 +127,14 @@ def test(dataloader, model):
 
 
 if __name__ == "__main__":
-    # mlflow.set_tracking_uri("http://127.0.0.1:1010")
+    # mlflow.set_tracking_uri("http://127.0.0.1:5000")
     # exp_info = MlflowClient().get_experiment_by_name("nlp")
     # exp_id = exp_info.experiment_id if exp_info else MlflowClient().create_experiment("nlp")
     # with mlflow.start_run(experiment_id=exp_id) as run:
 
     mlflow.set_experiment('nlp')
     with mlflow.start_run() as run:
-        # Hyper Parameters
+        Hyper Parameters
         train_dir = "train.csv"
         epochs = 3
         max_len = 30

@@ -1,0 +1,15 @@
+artifact_uri: file:///home/ubuntu/hooni/MLflow_tutorial/ML/mlruns/1/72558aa709ab4d898c54c8b6f2a2d2ff/artifacts
+end_time: 1647741288257
+entry_point_name: ''
+experiment_id: '1'
+lifecycle_stage: active
+name: ''
+run_id: 72558aa709ab4d898c54c8b6f2a2d2ff
+run_uuid: 72558aa709ab4d898c54c8b6f2a2d2ff
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1647741286686
+status: 3
+tags: []
+user_id: root

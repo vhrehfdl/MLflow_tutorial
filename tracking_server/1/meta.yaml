@@ -1,0 +1,4 @@
+artifact_location: /home/ubuntu/hooni/MLflow_tutorial/tracking_server/1
+experiment_id: '1'
+lifecycle_stage: active
+name: nlp

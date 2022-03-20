@@ -21,5 +21,5 @@ if __name__ == "__main__":
 
     print(test_x)
     test_x = np.array([test_x])
-    loaded_model = mlflow.pyfunc.load_model('runs:/1830630787574f2b9192ffcf7f28052f/model')
+    loaded_model = mlflow.pyfunc.load_model('runs:/eb143e5b147e464d8d94b75178307609/model')
     print(loaded_model.predict(test_x))

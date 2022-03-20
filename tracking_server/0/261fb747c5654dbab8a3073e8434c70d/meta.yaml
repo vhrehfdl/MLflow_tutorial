@@ -1,0 +1,15 @@
+artifact_uri: /home/ubuntu/hooni/MLflow_tutorial/tracking_server/0/261fb747c5654dbab8a3073e8434c70d/artifacts
+end_time: 1647744536427
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+name: ''
+run_id: 261fb747c5654dbab8a3073e8434c70d
+run_uuid: 261fb747c5654dbab8a3073e8434c70d
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1647744534834
+status: 3
+tags: []
+user_id: root
